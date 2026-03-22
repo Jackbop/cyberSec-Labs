@@ -1,22 +1,28 @@
-# cyberSec-Labs
-appunti e esercizi di WEB Security Academy
-# 🛡️ PortSwigger Lab: Blind SQL Injection
+# CyberSec Lab
 
-## Obiettivo
-Estrarre la password dell'utente `administrator` tramite una Blind SQL Injection nel cookie `TrackingId`.
+Laboratorio personale di cybersecurity dove documento il mio percorso di apprendimento nel campo del penetration testing e della sicurezza offensiva.
 
-## Strumenti utilizzati
-* **Burp Suite Professional** (Intruder & Repeater)
-* **sqlmap** (Automazione tramite WSL)
+## Chi sono
 
-## Procedura
-1. **Analisi manuale:** Ho verificato che aggiungendo `' AND '1'='1` al cookie `TrackingId`, la pagina mostrava "Welcome back", mentre con `' AND '1'='2` la scritta spariva.
-2. **Automazione con sqlmap:** Ho utilizzato il seguente comando per estrarre il database:
+Mi chiamo Jack, sono un appassionato di cybersecurity con esperienza pratica su HackerOne (26 punti) e CTF. Sto attualmente studiando per la certificazione eJPT (eLearnSecurity Junior Penetration Tester).
 
-python3 sqlmap.py -u "https://TUO-ID-LAB.net/" --cookie="TrackingId=...; session=..." --level=2 -p TrackingId --dump
+## Contenuto del repository
 
-## Risultato Finale
-Sono riuscito a scaricare la tabella utenti e ottenere le credenziali:
-| Username | Password |
-| :--- | :--- |
-| administrator | harxxm21zd62cbo06jkv |
+- `sql-injection/` — tecniche, esempi pratici e note su SQL injection
+- `xss/` — Cross-Site Scripting: tipologie e vettori di attacco
+- `bug-bounty/` — writeup e appunti dalle challenge HackerOne
+
+## Tool e tecnologie
+
+- Burp Suite Community
+- SQLmap
+- Linux / Windows
+- OWASP metodologie
+
+## Certificazioni
+
+- eJPT — in corso (INE / eLearnSecurity)
+
+## Contatti
+
+Disponibile per opportunità junior nel campo del penetration testing e della sicurezza informatica.
