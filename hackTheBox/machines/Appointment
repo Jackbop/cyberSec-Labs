@@ -1,49 +1,58 @@
-# Hack The Box - Meow (Starting Point - Tier 0)
-**Data:** 25 Marzo 2026
-**Target IP:** 10.129.45.83
-**Difficoltà:** Molto Facile
-**Obiettivo:** Ottenere accesso root e recuperare la flag di sistema.
+Hack The Box - Appointment (Starting Point - Tier 1)
 
----
+Data: 26 Marzo 2026
+Target IP: 10.129.47.83
+Difficoltà: Facile
+Obiettivo: Bypassare il login tramite SQL Injection e recuperare la flag.
+1. Introduzione
 
-## 1. Introduzione
-Meow è una macchina Linux progettata per introdurre i concetti base di scansione delle porte e servizi non sicuri (Legacy Protocols).
+Appointment è una macchina Linux che ospita un'applicazione web. A differenza di Meow, non sfrutta un protocollo di rete obsoleto, ma una vulnerabilità nel codice del sito web: la SQL Injection.
+2. Enumerazione (Reconnaissance)
 
-## 2. Enumerazione (Reconnaissance)
-Ho iniziato verificando la raggiungibilità del target tramite il protocollo ICMP:
-`ping -c 4 10.129.45.83`
+Ho iniziato verificando la presenza di servizi web tramite Nmap:
+nmap -sV -sC -Pn 10.129.47.83
 
-Successivamente, ho eseguito una scansione delle porte TCP utilizzando **Nmap** per identificare i servizi attivi:
-`nmap -sV -Pn 10.129.45.83`
+Risultati della scansione:
 
-**Risultati della scansione:**
-- **Porta 23/tcp**: Servizio **Telnet** (Linux telnetd) - **APERTA**.
+    Porta 80/tcp: Servizio HTTP (Apache httpd 2.4.38) - APERTA.
 
+    Il titolo della pagina è "Login".
 
+Non avendo accesso al browser, ho analizzato il codice sorgente del form di login via terminale per individuare i parametri di input:
+curl -s http://10.129.47.83 | grep -E "form|input"
 
-## 3. Analisi della Vulnerabilità
-Il servizio Telnet è intrinsecamente insicuro poiché trasmette credenziali in chiaro. In questo caso specifico, la configurazione presentava una **Broken Authentication**: l'utente amministratore (`root`) era accessibile senza alcuna password.
+Identificati i campi: username e password.
+3. Analisi della Vulnerabilità
 
-## 4. Sfruttamento (Exploitation)
-Ho utilizzato il client Telnet per connettermi al target:
-`telnet 10.129.45.83`
+Il sito è vulnerabile a SQL Injection (SQLi) nel form di login. Il backend non sanitizza l'input dell'utente, permettendo di inserire caratteri speciali come l'apice (') per alterare la query SQL originale e bypassare il controllo della password.
+4. Sfruttamento (Exploitation)
 
-Al prompt di login, ho inserito le seguenti credenziali:
-- **Username:** `root`
-- **Password:** (Nessuna - Invio)
+Ho utilizzato un attacco basato su una tautologia (1=1) per forzare il database ad accettare il login senza credenziali valide. Ho eseguito l'attacco tramite curl per analizzare la risposta HTTP:
 
-L'accesso è avvenuto con successo, ottenendo una shell con privilegi massimi (`#`).
+curl -s -L -X POST http://10.129.47.83 -d "username=' OR 1=1 #&password=any"
 
-## 5. Post-Exploitation
-Una volta all'interno del sistema, ho elencato i file nella directory home dell'utente root:
-`ls` -> Identificato il file `flag.txt`.
+Dettagli del payload:
 
-Ho letto il contenuto della flag:
-`cat flag.txt`
+    ' OR 1=1: Rende la condizione di login sempre vera.
 
-## 6. Conclusione e Mitigazione
-La macchina è stata compromessa a causa di una configurazione di login estremamente debole su un protocollo obsoleto.
-**Raccomandazioni:**
-1. Disabilitare il servizio Telnet.
-2. Implementare **SSH** con autenticazione tramite chiavi SSH o password robuste.
-3. Impedire l'accesso diretto all'utente `root`.
+    #: Commenta il resto della query (ignorando la password).
+
+    -L: Istruisce curl a seguire il reindirizzamento alla pagina della flag.
+
+L'accesso è avvenuto con successo, ottenendo il contenuto della dashboard.
+5. Post-Exploitation
+
+Una volta bypassata l'autenticazione, il server ha restituito il codice HTML della pagina riservata. Ho filtrato l'output per individuare la flag:
+curl ... | grep "Your flag is:"
+
+Flag: e3d0796d002a446c0e622226f42e9672
+6. Conclusione e Mitigazione
+
+La macchina è stata compromessa a causa di una gestione insicura delle query al database.
+Raccomandazioni:
+
+    Utilizzare Prepared Statements (Query parametrizzate) per impedire l'iniezione di codice.
+
+    Validare e sanitizzare ogni input proveniente dall'utente.
+
+    Utilizzare un Web Application Firewall (WAF) per bloccare tentativi di injection comuni.
