@@ -1,0 +1,50 @@
+1. Introduzione
+
+La macchina Sequel presenta una vulnerabilità di tipo Misconfiguration. Il servizio di database è esposto sulla rete senza alcuna protezione, permettendo l'accesso non autenticato con privilegi amministrativi.
+2. Enumerazione (Reconnaissance)
+
+Ho iniziato analizzando i servizi attivi sulla macchina tramite Nmap:
+nmap -sV -Pn 10.129.49.69
+
+Risultati della scansione:
+
+    Porta 3306/tcp: Servizio MySQL (MariaDB) - APERTA.
+
+3. Analisi della Vulnerabilità
+
+A differenza delle macchine precedenti (Web o Telnet), qui il punto di ingresso è il database stesso. La vulnerabilità riscontrata è l'Unauthenticated Remote Access: l'utente root del database non possiede una password ed è configurato per accettare connessioni da host remoti.
+4. Sfruttamento (Exploitation)
+
+Ho utilizzato il client MariaDB per tentare una connessione diretta come utente root:
+mysql -h 10.129.49.69 -u root
+
+L'accesso è avvenuto con successo senza richiesta di password, garantendo pieno controllo sul server database.
+5. Post-Exploitation (Data Extraction)
+
+Una volta all'interno, ho utilizzato i comandi SQL per navigare tra i dati:
+
+    Elenco database:
+    SHOW DATABASES; -> Identificato il database htb.
+
+    Accesso al database:
+    USE htb;
+
+    Elenco tabelle:
+    SHOW TABLES; -> Identificate le tabelle config e users.
+
+    Recupero dati:
+    SELECT * FROM config;
+
+All'interno della tabella config, ho individuato la riga corrispondente alla flag di sistema.
+
+Flag: 7b4bec00d1a39e3dd4e021ec3d915da8
+6. Conclusione e Mitigazione
+
+La compromissione del database ha permesso l'esposizione di informazioni sensibili (PII e flag).
+Raccomandazioni:
+
+    Configurare una password robusta per l'utente root di MySQL.
+
+    Limitare l'ascolto del servizio MySQL all'indirizzo 127.0.0.1 (localhost) se l'accesso remoto non è strettamente necessario.
+
+    Utilizzare un firewall per limitare l'accesso alla porta 3306 solo a IP fidati.
