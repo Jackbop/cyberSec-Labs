@@ -1,0 +1,64 @@
+Hack The Box - Crocodile (Starting Point - Tier 1)
+
+Data: 27 Marzo 2026
+Target IP: 10.129.46.15
+Difficoltà: Facile
+Obiettivo: Ottenere l'accesso all'area riservata del sito web e recuperare la flag.
+1. Introduzione
+
+La macchina Crocodile è un ottimo esempio di come informazioni apparentemente insignificanti lasciate su un servizio (FTP) possano essere utilizzate per compromettere un altro servizio (HTTP). Il vettore d'attacco principale è l'Information Disclosure tramite accesso FTP anonimo.
+2. Enumerazione (Reconnaissance)
+
+Ho iniziato con una scansione rapida delle porte per identificare i servizi attivi:
+nmap -F -T4 10.129.46.15
+
+Risultati:
+
+    Porta 21/tcp: FTP (vsFTPd 3.0.3)
+
+    Porta 80/tcp: HTTP (Apache httpd 2.4.41)
+
+3. Analisi del Servizio FTP
+
+Il server FTP permetteva l'accesso con l'utente anonymous. Nonostante alcune instabilità di rete, sono riuscito a identificare due file critici presenti nella directory principale:
+
+    allowed.userlist: Una lista di potenziali nomi utente.
+
+    allowed.userlist.passwd: Una lista di password corrispondenti.
+
+4. Web Fuzzing (Directory Brute Forcing)
+
+Il sito web sulla porta 80 appariva come una pagina aziendale statica. Per trovare il punto di ingresso, ho utilizzato Gobuster con una wordlist comune per cercare pagine PHP nascoste:
+
+gobuster dir -u http://10.129.46.15 -w common.txt -x php
+
+Risultati rilevanti:
+
+    /login.php (Status: 200)
+
+    /dashboard.php (Status: 200)
+
+5. Sfruttamento (Exploitation)
+
+Navigando su http://10.129.46.15/login.php, ho trovato un form di autenticazione. Utilizzando le credenziali precedentemente estratte dal server FTP:
+
+    Username: admin
+
+    Password: cRocodile@123
+
+Ho ottenuto l'accesso alla Dashboard amministrativa del sito.
+6. Post-Exploitation
+
+All'interno della Dashboard, la flag era chiaramente esposta nell'interfaccia utente.
+
+Flag: c7110277ac42354641ef266cf2076041 (Nota: verifica che sia questa la tua, i codici cambiano spesso!)
+7. Conclusione e Mitigazione
+
+La vulnerabilità principale risiede nella cattiva gestione del server FTP e nell'uso di password deboli per l'account admin.
+Raccomandazioni:
+
+    Disabilitare l'accesso anonymous sul server FTP.
+
+    Rimuovere file contenenti credenziali in chiaro da server accessibili.
+
+    Implementare una politica di password forti e autenticazione a due fattori (2FA) per i pannelli admin.
