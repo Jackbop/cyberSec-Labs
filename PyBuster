@@ -1,0 +1,40 @@
+🕵️‍♂️ Project: PyBuster (Web Directory Fuzzer)
+📝 Descrizione del Progetto
+
+PyBuster è un tool di sicurezza offensiva scritto in Python. È stato progettato per automatizzare la scoperta di directory e file nascosti su un server web (Enumerazione). Invece di cercare manualmente cartelle come /admin o /backup, PyBuster utilizza una wordlist (un dizionario di nomi comuni) per testare migliaia di combinazioni in pochi secondi.
+🧠 Come Funziona (Spiegato Semplice)
+
+Immagina un sito web come un edificio con molte porte senza etichetta.
+
+    Il Dizionario (common.txt): È la lista dei nomi delle stanze che il "ladro etico" sospetta esistano.
+
+    Il Robot (pybuster.py): Prende ogni nome dalla lista e prova a "bussare" all'indirizzo del server (es. http://10.129.52.78/login.php).
+
+    La Risposta (HTTP Codes):
+
+        200 (OK): La porta si apre! La pagina esiste.
+
+        403 (Forbidden): La porta è chiusa a chiave, ma la stanza esiste.
+
+        404 (Not Found): Non c'è nulla, passa alla prossima porta.
+
+💻 Il Codice Core
+
+Il cuore dello script utilizza la libreria requests per gestire le comunicazioni web e un ciclo for per l'automazione:
+Python
+
+# Frammento logico del codice
+for parola in wordlist:
+    url = f"{target}/{parola}"
+    risposta = requests.get(url)
+    if risposta.status_code == 200:
+        print(f"[+] TROVATA: {url}")
+
+🚀 Risultati su Macchina "Crocodile" (Hack The Box)
+
+Durante l'esecuzione sulla macchina di laboratorio, PyBuster ha identificato con successo le seguenti risorse critiche:
+Risorsa Trovata	Codice HTTP	Significato
+/dashboard	200	Pannello di controllo potenziale.
+/login.php	200	Pagina di accesso al sistema.
+/assets	200	Cartella contenente file di sistema/immagini.
+/server-status	403	File di log del server (Accesso Negato).
