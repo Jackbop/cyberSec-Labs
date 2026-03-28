@@ -1,0 +1,52 @@
+Path to eJPT: Penetration Testing Labs & Custom Tooling
+
+Benvenuti nel mio repository dedicato alla preparazione per la certificazione eJPT (Junior Penetration Tester). Qui documento i miei progressi, i laboratori risolti su Hack The Box e gli strumenti di automazione che ho sviluppato in Python.
+🛠️ Custom Security Toolset
+
+Invece di usare solo tool pre-esistenti, ho sviluppato i miei strumenti per comprendere a fondo i protocolli di rete.
+Tool	Funzionalità	Tecnologie
+PyPortScanner	Scanner di porte TCP veloce basato su socket per il footprinting iniziale.	Python (Socket, Threading)
+PyBuster	Web Directory Brute-forcer per l'enumerazione di directory e file nascosti.	Python (Requests, Wordlists)
+
+    Nota: Questi tool sono stati creati per scopi educativi e per automatizzare le fasi di ricognizione durante i lab.
+
+🎯 Hack The Box - Machines & Skills
+
+In questa sezione riporto le macchine completate e le vulnerabilità sfruttate, mappate secondo i domini dell'esame eJPT.
+🟢 Starting Point (Tier 0 & 1)
+
+    Meow & Fawn: Introduzione all'interazione con servizi (Telnet, FTP) e cattura di flag.
+
+    Crocodile: Enumerazione Web avanzata e utilizzo di wordlist personalizzate per scoprire pannelli di amministrazione.
+
+    Appointment: Sfruttamento di SQL Injection (SQLi) per bypassare l'autenticazione su applicazioni web.
+
+🛠️ Competenze Acquisite
+
+    Enumerazione: Scansione di rete sistemica e service discovery.
+
+    Web Attacks: Basic SQLi, IDOR e Directory Traversal.
+
+    Credential Attacks: Analisi di file di log e discovery di password hardcoded.
+
+📈 Roadmap verso la eJPT
+
+Sto attualmente lavorando sui 3 Pilastri Fondamentali che mi separano dalla certificazione:
+
+    Network Sniffing: Utilizzo di tool come Responder per intercettare Hash NTLMv2 (LLMNR/NBT-NS Poisoning).
+
+    Exploitation Frameworks: Padronanza di Metasploit per la gestione di sessioni e payload.
+
+    Post-Exploitation & Pivoting: Tecniche per muoversi all'interno di una rete compromessa.
+
+👨‍💻 Setup di Laboratorio
+
+    OS: WSL2 (Ubuntu 24.04 LTS) integrato in Windows.
+
+    Linguaggi: Python 3.x per lo scripting di attacco.
+
+    Network: VPN dedicata per laboratori sicuri su HTB.
+
+⚠️ Disclaimer
+
+Tutti i contenuti e i tool presenti in questo repository sono realizzati esclusivamente per scopi di Cyber Security Education e preparazione professionale. Non incoraggio né supporto l'uso di queste tecniche su sistemi senza esplicita autorizzazione (Ethical Hacking Only).
