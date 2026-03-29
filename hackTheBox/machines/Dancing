@@ -1,0 +1,48 @@
+📄 Copia questo nel tuo file README.md o in writeups/Dancing.md
+📑 Mission Report: HTB - Machine "Dancing"
+
+Target IP: 10.129.54.233
+
+Difficulty: Easy / Starting Point
+
+Skill Focus: SMB Enumeration, Null Sessions, Remote File System Navigation.
+🔍 Phase 1: Reconnaissance (Enumeration)
+
+The initial nmap scan revealed that the target is a Windows machine with the SMB (Server Message Block) protocol active on port 445.
+Bash
+
+nmap -sV 10.129.54.233
+# Result: 445/tcp open microsoft-ds
+
+🛠️ Phase 2: Vulnerability Assessment
+
+I attempted to list the network shares using an Anonymous Login (Null Session). The server misconfiguration allowed me to view the internal share structure without providing credentials.
+Bash
+
+smbclient -L 10.129.54.233
+
+Findings:
+
+    ADMIN$, C$, IPC$: Standard administrative shares.
+
+    WorkShares: A custom user-defined share, likely containing sensitive data.
+
+🏴‍☠️ Phase 3: Exploitation & Data Exfiltration
+
+Using smbclient, I established a connection to the WorkShares directory.
+
+    Access: Connected anonymously to //10.129.54.233/WorkShares.
+
+    Navigation: Explored user directories (Amy.J, James.P).
+
+    Discovery: Found the target file flag.txt inside the James.P directory.
+
+    Exfiltration: Successfully downloaded the flag to my local attack machine using the get command.
+
+Bash
+
+smb: \James.P\> get flag.txt
+
+💡 Key Takeaway (eJPT Concept)
+
+This lab demonstrates the danger of Insecure SMB Share Permissions. In a corporate environment, allowing anonymous access to work directories can lead to massive data leaks and credential harvesting.
