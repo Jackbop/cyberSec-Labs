@@ -1,0 +1,37 @@
+📑 Executive Report: Redis Database Security Assessment
+
+Target: Machine "Redeemer" (Hack The Box)
+
+Objective: Evaluate the security posture of the internal NoSQL database.
+📋 Sintesi dell'Attacco
+
+Durante l'attività di penetration testing sulla macchina Redeemer, è stata identificata una grave vulnerabilità legata a una configurazione errata (Misconfiguration) del servizio Redis. La mancanza di meccanismi di autenticazione ha permesso l'accesso completo ai dati sensibili memorizzati in memoria.
+🔍 1. Fase di Discovery (Ricognizione)
+
+L'analisi iniziale dei servizi comuni (Top 1000 porte) non ha rivelato punti di ingresso. È stato quindi necessario eseguire una scansione completa del range TCP (65.535 porte). Questa operazione ha permesso di individuare il servizio Redis in ascolto sulla porta standard 6379, che altrimenti sarebbe rimasto nascosto a una scansione superficiale.
+🛠️ 2. Analisi delle Vulnerabilità
+
+Il servizio identificato è risultato affetto da Accesso Non Autenticato. Molti database NoSQL, come Redis, vengono spesso distribuiti con le impostazioni di default che non richiedono una password. Se il servizio viene esposto sulla rete invece di essere limitato all'interfaccia locale (localhost), chiunque può connettersi e interagire con i dati.
+🏴‍☠️ 3. Sfruttamento e Data Extraction
+
+Utilizzando l'interfaccia a riga di comando di Redis, ho stabilito una connessione diretta con il server.
+
+    Verifica: Il server ha risposto correttamente alle richieste di stato, confermando l'assenza di filtri.
+
+    Enumerazione: Esplorando il database predefinito (index 0), è stato possibile elencare tutte le chiavi memorizzate.
+
+    Esfiltrazione: Tra le chiavi individuate, è stata estratta la stringa denominata "flag", contenente il valore alfanumerico ricercato.
+
+🛡️ 4. Raccomandazioni di Sicurezza (Remediation)
+
+Per mettere in sicurezza l'infrastruttura, si consigliano le seguenti azioni immediate:
+
+    Abilitare l'Autenticazione: Configurare una password robusta tramite la direttiva requirepass nel file di configurazione di Redis.
+
+    Network Binding: Limitare l'ascolto del servizio esclusivamente all'indirizzo di loopback (127.0.0.1) se l'accesso esterno non è strettamente necessario.
+
+    Cambio Porta: Spostare il servizio su una porta non standard per mitigare gli attacchi automatizzati.
+
+💡 Nota per il Portfolio (eJPT Skills)
+
+Questo laboratorio dimostra la padronanza delle tecniche di Full Port Scanning e della capacità di interagire con database NoSQL senza l'ausilio di tool automatici, comprendendo la logica dei protocolli di rete.
