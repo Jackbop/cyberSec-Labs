@@ -1,0 +1,66 @@
+Write-up: Hack The Box - Vaccine (Starting Point)
+🎯 Obiettivo
+
+Ottenere accesso amministrativo e recuperare la user.txt e la root.txt sulla macchina Linux Vaccine.
+🛠️ Tool Utilizzati
+
+    Nmap: Scansione delle porte e servizi.
+
+    John the Ripper: Password cracking (Zip2John).
+
+    SQLMap: Automatizzazione della SQL Injection (SQLi).
+
+    Curl: Testing delle richieste HTTP.
+
+📑 Walkthrough
+1. Enumerazione Iniziale
+
+La scansione delle porte ha rivelato tre servizi attivi:
+
+    Porta 21 (FTP): Accesso anonimo consentito.
+
+    Porta 22 (SSH): Accesso remoto sicuro.
+
+    Porta 80 (HTTP): Server web Apache.
+
+Ho scaricato dal server FTP un file chiamato backup.zip, che conteneva il codice sorgente del sito web ma era protetto da password.
+2. Password Cracking
+
+Per sbloccare il file backup.zip, ho estratto l'hash con zip2john e utilizzato John the Ripper con la wordlist rockyou.txt.
+
+    Comando: john --wordlist=rockyou.txt hash.txt
+
+    Password trovata: 741852963
+
+3. Analisi del Codice (Analisi Statica)
+
+Estraendo lo ZIP, ho analizzato index.php. Il codice rivelava un login basato su un hash MD5:
+md5($_POST['password']) === "2cb42f8734ea607eefed3b70af13bbd3"
+
+Craccando l'hash MD5, ho ottenuto la password in chiaro: qwerty789.
+4. Sfruttamento della Vulnerabilità (SQL Injection)
+
+Dopo aver effettuato l'accesso al portale web come admin, ho testato la barra di ricerca nella dashboard.php. Inserendo un singolo apice ('), il server ha restituito un errore di sintassi del database, confermando una SQL Injection.
+
+Ho utilizzato SQLMap per automatizzare l'attacco, passando il cookie di sessione per bypassare il login:
+Bash
+
+sqlmap -u "http://<IP>/dashboard.php?search=any" --cookie="PHPSESSID=<COOKIE>" --os-shell
+
+5. Post-Exploitation e Flag
+
+Ottenuta la os-shell con l'utente postgres, ho esplorato il file system.
+
+    Ho identificato gli utenti del sistema (simon, ftpuser).
+
+    Ho recuperato la User Flag leggendo il file /home/simon/user.txt.
+
+🔑 Conclusione
+
+Questa macchina dimostra l'importanza di:
+
+    Non riutilizzare password deboli o predefinite.
+
+    Non lasciare file di backup accessibili pubblicamente (FTP).
+
+    Sanificare sempre gli input degli utenti per prevenire attacchi SQL Injection.
