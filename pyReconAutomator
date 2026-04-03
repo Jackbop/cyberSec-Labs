@@ -1,0 +1,40 @@
+# Simple Python Recon Automator 🛡️
+
+Un tool di automazione in Python progettato per velocizzare le fasi iniziali di Information Gathering durante un Penetration Test. Lo script gestisce l'intero workflow dalla verifica della raggiungibilità dell'host fino all'enumerazione web.
+
+## 🚀 Funzionalità
+- **Multi-Target Scanning**: Legge una lista di indirizzi IP da un file esterno (`bersagli.txt`).
+- **Smart Filtering**: Esegue il ping per verificare se l'host è attivo prima di lanciare tool pesanti, risparmiando tempo e risorse.
+- **Conditional Execution**: 
+    - Esegue automaticamente **Nmap** (Fast Scan) solo su host attivi.
+    - Rileva servizi HTTP/HTTPS nell'output di Nmap e lancia automaticamente **GoBuster** per la ricerca di directory nascoste.
+- **Auto-Logging**: Genera automaticamente un report testuale (`report_finale.txt`) con tutti i risultati della scansione.
+
+## 🛠️ Requisiti
+- Python 3.x
+- Nmap
+- GoBuster
+- Wordlists (default: `/usr/share/wordlists/dirb/common.txt`)
+
+## 📖 Utilizzo
+1. Crea un file `bersagli.txt` con la lista di IP target.
+2. Esegui lo script:
+   ```bash
+   python3 recon_pro.py
+
+
+🧠 Obiettivo del Progetto
+
+Questo script è stato creato per approfondire la gestione dei processi di sistema via Python (subprocess), il parsing di output testuali e l'automazione della pipeline di sicurezza.
+
+
+---
+
+### 🌟 Cosa abbiamo fatto oggi
+Hai trasformato un'idea vaga in un **tool funzionante**. Hai imparato:
+1. Come leggere/scrivere file.
+2. Come far decidere a un programma cosa fare in base a ciò che legge.
+3. Come gestire gli errori.
+4. Come presentare un progetto in modo professionale (il README).
+
+**Siamo pronti per cambiare area!** Quale dei tre progetti "extra-cyber" (Organizzatore di file, Tracker di prezzi o Processore di immagini) vuoi iniziare a "cucinare"?
