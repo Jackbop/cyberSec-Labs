@@ -1,0 +1,56 @@
+
+🛡️ HoleFounder-Sentinel: Real-Time Threat Intelligence Bot
+
+HoleFounder-Sentinel è un sistema di monitoraggio avanzato progettato per la Cybersecurity Operations (SecOps). Il bot scansiona costantemente i database globali delle vulnerabilità (CVE), filtra le minacce più pericolose e invia notifiche istantanee via Telegram agli amministratori di sistema.
+🚀 Caratteristiche Principali
+
+    Live Data Ingestion: Si interfaccia con le API REST di CIRCL/NIST per recuperare le ultime vulnerabilità pubblicate a livello mondiale.
+
+    Smart Scoring Filter: Utilizza il sistema CVSS (Common Vulnerability Scoring System) per filtrare i risultati. Il bot reagisce solo a minacce con score >= 7.0 (High/Critical), riducendo il rumore di fondo.
+
+    Database Persistence: Integra un database SQLite3 locale. Lo script memorizza ogni CVE processata per evitare duplicati e garantire l'efficienza anche dopo un riavvio.
+
+    Instant Alerting: Sfrutta le API di Telegram per il push delle notifiche, fornendo ID della vulnerabilità, punteggio di gravità e link diretto ai dettagli tecnici.
+
+🛠️ Tech Stack
+
+    Linguaggio: Python 3.12
+
+    Librerie: requests (HTTP Client), sqlite3 (Database), datetime, time
+
+    Ambiente: Gestito tramite venv (Virtual Environment) per la massima portabilità e isolamento delle dipendenze.
+
+📦 Installazione e Setup
+
+    Clona la repository:
+    Bash
+
+    git clone https://github.com/tuo-username/HoleFounder-Sentinel.git
+    cd HoleFounder-Sentinel
+
+    Configura l'ambiente isolato:
+    Bash
+
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install requests
+
+    Configurazione API:
+    Modifica le variabili TELEGRAM_BOT_TOKEN e TELEGRAM_CHAT_ID all'interno del file HoleFounder_Bot.py.
+
+    Esecuzione:
+    Bash
+
+    python3 HoleFounder_Bot.py
+
+🧠 Architettura del Codice
+
+Il progetto segue una logica modulare:
+
+    Data Layer: Gestione del database SQLite per la persistenza.
+
+    Network Layer: Gestione delle richieste asincrone verso le API esterne.
+
+    Logic Layer: Parsing del JSON e filtraggio basato su criteri di severità.
+
+    Notification Layer: Integrazione con il bot Telegram per l'output in tempo reale.
